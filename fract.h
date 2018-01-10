@@ -13,11 +13,18 @@
 #ifndef FRACT_H
 # define FRACT_H
 
-# define WIDTH 1280
-# define HEIGHT 1280
+# define WIDTH 800
+# define HEIGHT 800
 
+# define MAP(value, istart, iend, ostart, oend) (ostart + (oend - ostart) * ((value - istart) / (iend - istart)))
+
+# define MAC_ESC_BUT 53
 # define MAC_BUT_MINUS 78
 # define MAC_BUT_PLUS 69
+
+# define LINUX_ESC_BUT 65307
+# define LINUX_BUT_MINUS 45
+# define LINUX_BUT_PLUS 61
 
 # include "libft/includes/libft.h"
 # include <math.h>
@@ -41,5 +48,15 @@ typedef	struct	s_mapinfo
 	int			maxiterations;
 	int			maxiterations_const;
 }				t_mapinfo;
+
+void	init(t_mapinfo *map, char *str);
+void	init_fract_tree(t_mapinfo *map);
+void	init_mandelbrot(t_mapinfo *map);
+void	init_julia(t_mapinfo *map);
+void	draw_mandelbrot(t_mapinfo *map);
+void	draw_fract_tree(t_mapinfo *map);
+void	draw_julia(t_mapinfo *map);
+int		exit_func(void *param);
+int		key_function(int keycode, void *param);
 
 #endif

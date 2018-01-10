@@ -1,5 +1,5 @@
 CC = clang
-FILES = main 
+FILES = main errors init key_func fract_tree
 SRC = $(addprefix src/, $(addsuffix .c, $(FILES)))
 OBJ = $(addprefix obj/, $(addsuffix .o, $(FILES)))
 DEBUG = -g -O3
@@ -11,7 +11,7 @@ NAME = fractol
 all: $(NAME)
 
 $(NAME): $(OBJ) libft/libft.a
-	$(CC) $(DEBUG) -o $(NAME) $(OBJ) $(FLAGS) $(CGFLAGS_MAC) libft/libft.a
+	$(CC) $(DEBUG) -o $(NAME) $(OBJ) $(FLAGS) $(CGFLAGS_LINUX) libft/libft.a
 
 libft/libft.a:
 	@make -C libft/
