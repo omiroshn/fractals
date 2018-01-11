@@ -11,7 +11,7 @@ NAME = fractol
 all: $(NAME)
 
 $(NAME): $(OBJ) libft/libft.a
-	$(CC) $(DEBUG) -o $(NAME) $(OBJ) $(FLAGS) $(CGFLAGS_LINUX) libft/libft.a
+	$(CC) $(DEBUG) -o $(NAME) $(OBJ) $(FLAGS) $(CGFLAGS_MAC) libft/libft.a
 
 libft/libft.a:
 	@make -C libft/

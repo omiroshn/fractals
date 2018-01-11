@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/07 18:24:30 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/07 20:12:42 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/10 23:25:33 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,24 @@
 # define MAP(value, istart, iend, ostart, oend) (ostart + (oend - ostart) * ((value - istart) / (iend - istart)))
 
 # define MAC_ESC_BUT 53
-# define MAC_BUT_MINUS 78
-# define MAC_BUT_PLUS 69
+# define MAC_BUT_MINUS 27
+# define MAC_BUT_PLUS 24
+# define MAC_ARROW_UP 126
+# define MAC_ARROW_DOWN 125
+# define MAC_ARROW_LEFT 123
+# define MAC_ARROW_RIGHT 124
+# define MAC_BUT_1 18
+# define MAC_BUT_2 19
 
 # define LINUX_ESC_BUT 65307
 # define LINUX_BUT_MINUS 45
 # define LINUX_BUT_PLUS 61
+# define LINUX_ARROW_UP 65362
+# define LINUX_ARROW_DOWN 65364
+# define LINUX_ARROW_LEFT 65361
+# define LINUX_ARROW_RIGHT 65363
+# define LINUX_BUT_1 49
+# define LINUX_BUT_2 50
 
 # include "libft/includes/libft.h"
 # include <math.h>
@@ -36,6 +48,25 @@
 # include <string.h>
 # include <mlx.h>
 
+typedef struct	s_complex
+{
+	float		real;
+	float		im;
+}				t_complex;
+
+typedef struct	s_fract
+{
+	t_complex	new_a;
+	t_complex	new_b;
+	t_complex	old_a;
+	t_complex	old_b;
+	long long	maxiterations;
+	long long	maxiterations_const;
+	float		moveX;
+	float		moveY;
+	float		zoom;
+}				t_fract;
+
 typedef	struct	s_mapinfo
 {
 	void		*mlx;
@@ -45,10 +76,10 @@ typedef	struct	s_mapinfo
 	int			bits_per_pixel;
 	int			size_line;
 	int			endian;
-	int			maxiterations;
-	int			maxiterations_const;
+	t_fract		fract;
 }				t_mapinfo;
 
+double	ft_map(double value, double istart, double iend, double ostart, double oend);
 void	init(t_mapinfo *map, char *str);
 void	init_fract_tree(t_mapinfo *map);
 void	init_mandelbrot(t_mapinfo *map);

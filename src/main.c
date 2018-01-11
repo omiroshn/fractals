@@ -6,36 +6,54 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/07 16:26:45 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/07 21:12:03 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/11 20:01:10 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fract.h"
 
-float	ft_map(float value, float istart, float iend, float ostart, float oend)
+double	ft_map(double value, double istart, double iend, double ostart, double oend)
 {
     return (ostart + (oend - ostart) * ((value - istart) / (iend - istart)));
 }
 
-static inline int	rgba_to_int(int red, int green, int blue, int alpha)
+static inline int	rgb_to_int(int red, int green, int blue)
 {
 	int r;
 	int g;
 	int b;
-	int a;
 
 	r = red & 0xFF;
 	g = green & 0xFF;
 	b = blue & 0xFF;
-	a = alpha & 0xFF;
-	return ((r << 24 | g << 16 | b << 8 | a));
+	return (r << 16 | g << 8 | b);
+}
+
+static inline int	rgb_to_int2(int n)
+{
+	int r;
+	int g;
+	int b;
+
+	r = ((int)(n * sinf(n)) % 256);
+	g = ((n * 3) % 256);
+	b = (n % 256);
+	return ((r << 16 | g << 8 | b));
+}
+
+int		get_rgb_smooth(double t) {
+
+	return (rgb_to_int((int)(9 * (1 - t) * t * t * t * 255),
+		(int)(15 * (1 - t)* (1 - t) * t * t * 255),
+		(int)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255)));
 }
 
 void	draw_mandelbrot(t_mapinfo *map)
 {
+	float pr, pi;
 	int x;
 	int y;
-	float bright;
+	double bright;
 	float old_a;
 	float old_b;
 	int n;
@@ -44,38 +62,57 @@ void	draw_mandelbrot(t_mapinfo *map)
 	float ca;
 	float cb;
 	int pix;
+	int hue;
+	int saturation;
+	float newRe, newIm, oldRe, oldIm;
 	
-
+	
+	int palette[map->fract.maxiterations + 1][3];
+	for (int i = 0; i <= map->fract.maxiterations; ++i)
+	{
+		palette[i][0] = i < 2 * map->fract.maxiterations / 3 ? i * 255 * 3 / (2 * map->fract.maxiterations) : 255;
+		palette[i][1] = i < map->fract.maxiterations / 3 ? 0 : (i - map->fract.maxiterations / 3) * 255 * 3 / (2 * map->fract.maxiterations);
+		palette[i][2] = 0;
+	}
 	x = 0;
 	while (x < WIDTH)
 	{
 		y = 0;
 		while (y < HEIGHT)
 		{
-			
-
-			old_a = ft_map(x, 0, WIDTH, -2, 2);
-			old_b = ft_map(y, 0, HEIGHT, -2, 2);
+			// pr = 1.5 * (x - WIDTH / 2) / (0.5 * map->fract.zoom * WIDTH) + map->fract.moveX;
+			// pi = (y - HEIGHT / 2) / (0.5 * map->fract.zoom * HEIGHT) + map->fract.moveY;
+			// newRe = newIm = oldRe = oldIm = 0;
+			old_a = ft_map(x, 0, WIDTH, -2, 2) + map->fract.moveX;
+			old_b = ft_map(y, 0, HEIGHT, -2, 2) + map->fract.moveY;
 
 			ca = old_a;
 			cb = old_b;
 
 			n = 0;
-			while (n < map->maxiterations)
+			while (n < map->fract.maxiterations)
 			{
+				// oldRe = newRe;
+				// oldIm = newIm;
+				// newRe = oldRe * oldRe - oldIm * oldIm + pr;
+				// newIm = 2 * oldRe * oldIm + pi;
+				// if ((newRe * newRe + newIm * newIm) > 16)
+				// 	break;
 				new_a = old_a * old_a - old_b * old_b;
 				new_b = 2 * old_a * old_b;
 				old_a = new_a + ca;
 				old_b = new_b + cb;
-
 				if (fabs(old_a + old_b) > 4)
 					break;
 				n++;
 			}
-			// bright = ft_map(n, 0, map->maxiterations, 0, 1);
-			// bright = ft_map(sqrt(bright), 0, 1, 0, 0xFFFFFF);
-			bright = (n * 16) % 255;
-			if (n == map->maxiterations)
+			//bright = ft_map(old_b, 0, map->fract.maxiterations, 0, 1);
+			//bright = rgb_to_int(palette[n][0], palette[n][1], palette[n][2]);
+			// printf("%i\n", rgb_to_int2(n));
+			//printf("%f\n", bright);
+			//bright = 0xFFFFFF;
+			bright = get_rgb_smooth((double)n / map->fract.maxiterations);
+			if (n == map->fract.maxiterations)
 				bright = 0;
 			pix = (x + y * WIDTH);
 			map->image[pix] = bright;
