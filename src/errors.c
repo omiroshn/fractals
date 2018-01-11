@@ -3,5 +3,5 @@
 int		exit_func(void *param)
 {
 	param = NULL;
-	exit(1);
+	exit(0);
 }

@@ -30,6 +30,6 @@ int		key_function(int keycode, void *param)
 		map->fract.zoom *= 0.98;
 		// map->fract.maxiterations = fabs(map->fract.maxiterations * 0.99 - 2);
 	}
-	draw_mandelbrot(map);
+	draw(map);
 	return (0);
 }

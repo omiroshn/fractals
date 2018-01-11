@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/18 21:27:42 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/10 23:01:10 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/11 21:12:23 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,29 +78,29 @@
 
 typedef	struct	s_vec
 {
-	float	x;
-	float	y;
-	float	z;
-	float	w;
+	double	x;
+	double	y;
+	double	z;
+	double	w;
 	int		color;
 }				t_vec;
 
 typedef struct	s_matrix4
 {
-	float		m[4][4];
+	double		m[4][4];
 }				t_matrix4;
 
 typedef struct	s_persp_proj
 {
-	float angle_of_view;
-	float image_aspect_ratio;
-	float n;
-	float f;
-	float b;
-	float t;
-	float l;
-	float r;
-	float scale;
+	double angle_of_view;
+	double image_aspect_ratio;
+	double n;
+	double f;
+	double b;
+	double t;
+	double l;
+	double r;
+	double scale;
 }				t_persp_proj;
 
 typedef struct	s_bresenhem
@@ -136,13 +136,13 @@ typedef	struct	s_mapinfo
 	char		*lol;
 	t_vec		*vec;
 	t_vec		*vec_ch;
-	float		angle_x;
-	float		angle_y;
-	float		angle_z;
-	float		scale;
-	float		offset_x;
-	float		offset_y;
-	float		offset_z;
+	double		angle_x;
+	double		angle_y;
+	double		angle_z;
+	double		scale;
+	double		offset_x;
+	double		offset_y;
+	double		offset_z;
 }				t_mapinfo;
 
 #endif

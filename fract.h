@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/07 18:24:30 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/10 23:25:33 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/11 21:21:20 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 
 # define WIDTH 800
 # define HEIGHT 800
-
-# define MAP(value, istart, iend, ostart, oend) (ostart + (oend - ostart) * ((value - istart) / (iend - istart)))
+# define THREADS 16
+# define DB(x) ((double)x)
+# define MAP(x, y, z, a, b) (DB(a) + (DB(b) - DB(a)) * ((DB(x) - DB(y)) / (DB(z) - DB(y))))
 
 # define MAC_ESC_BUT 53
 # define MAC_BUT_MINUS 27
@@ -47,6 +48,7 @@
 # include <stdio.h>
 # include <string.h>
 # include <mlx.h>
+# include <pthread.h>
 
 typedef struct	s_complex
 {
@@ -79,12 +81,20 @@ typedef	struct	s_mapinfo
 	t_fract		fract;
 }				t_mapinfo;
 
+typedef struct	s_info
+{
+	unsigned	x;
+	unsigned	end;
+	t_mapinfo	*map;
+}				t_info;
+
+void	draw(t_mapinfo *map);
 double	ft_map(double value, double istart, double iend, double ostart, double oend);
 void	init(t_mapinfo *map, char *str);
 void	init_fract_tree(t_mapinfo *map);
 void	init_mandelbrot(t_mapinfo *map);
 void	init_julia(t_mapinfo *map);
-void	draw_mandelbrot(t_mapinfo *map);
+void	draw_mandelbrot(t_info *info);
 void	draw_fract_tree(t_mapinfo *map);
 void	draw_julia(t_mapinfo *map);
 int		exit_func(void *param);

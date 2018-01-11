@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/07 16:26:45 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/11 20:01:10 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/11 21:20:01 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,68 +29,48 @@ static inline int	rgb_to_int(int red, int green, int blue)
 	return (r << 16 | g << 8 | b);
 }
 
-static inline int	rgb_to_int2(int n)
+int		get_rgb_smooth(double t)
 {
-	int r;
-	int g;
-	int b;
-
-	r = ((int)(n * sinf(n)) % 256);
-	g = ((n * 3) % 256);
-	b = (n % 256);
-	return ((r << 16 | g << 8 | b));
-}
-
-int		get_rgb_smooth(double t) {
-
 	return (rgb_to_int((int)(9 * (1 - t) * t * t * t * 255),
 		(int)(15 * (1 - t)* (1 - t) * t * t * 255),
 		(int)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255)));
 }
 
-void	draw_mandelbrot(t_mapinfo *map)
+void	draw_mandelbrot(t_info *info)
 {
-	float pr, pi;
+	double pr, pi;
 	int x;
 	int y;
 	double bright;
-	float old_a;
-	float old_b;
+	double old_a;
+	double old_b;
 	int n;
-	float new_a;
-	float new_b;
-	float ca;
-	float cb;
+	double new_a;
+	double new_b;
+	double ca;
+	double cb;
 	int pix;
 	int hue;
 	int saturation;
-	float newRe, newIm, oldRe, oldIm;
+	double newRe, newIm, oldRe, oldIm;
 	
-	
-	int palette[map->fract.maxiterations + 1][3];
-	for (int i = 0; i <= map->fract.maxiterations; ++i)
-	{
-		palette[i][0] = i < 2 * map->fract.maxiterations / 3 ? i * 255 * 3 / (2 * map->fract.maxiterations) : 255;
-		palette[i][1] = i < map->fract.maxiterations / 3 ? 0 : (i - map->fract.maxiterations / 3) * 255 * 3 / (2 * map->fract.maxiterations);
-		palette[i][2] = 0;
-	}
-	x = 0;
-	while (x < WIDTH)
+	x = info->x;
+	while (x < info->end)
 	{
 		y = 0;
 		while (y < HEIGHT)
 		{
-			// pr = 1.5 * (x - WIDTH / 2) / (0.5 * map->fract.zoom * WIDTH) + map->fract.moveX;
-			// pi = (y - HEIGHT / 2) / (0.5 * map->fract.zoom * HEIGHT) + map->fract.moveY;
+			// pr = 1.5 * (x - WIDTH / 2) / (0.5 * info->map->fract.zoom * WIDTH) + info->map->fract.moveX;
+			// pi = (y - HEIGHT / 2) / (0.5 * info->map->fract.zoom * HEIGHT) + info->map->fract.moveY;
 			// newRe = newIm = oldRe = oldIm = 0;
-			old_a = ft_map(x, 0, WIDTH, -2, 2) + map->fract.moveX;
-			old_b = ft_map(y, 0, HEIGHT, -2, 2) + map->fract.moveY;
+			old_a = MAP(x, 0, WIDTH, -2 * info->map->fract.zoom, 2 * info->map->fract.zoom) + info->map->fract.moveX;
+			old_b = MAP(y, 0, HEIGHT, -2 * info->map->fract.zoom, 2 * info->map->fract.zoom) + info->map->fract.moveY;
 
 			ca = old_a;
 			cb = old_b;
 
 			n = 0;
-			while (n < map->fract.maxiterations)
+			while (n < info->map->fract.maxiterations)
 			{
 				// oldRe = newRe;
 				// oldIm = newIm;
@@ -106,20 +86,37 @@ void	draw_mandelbrot(t_mapinfo *map)
 					break;
 				n++;
 			}
-			//bright = ft_map(old_b, 0, map->fract.maxiterations, 0, 1);
-			//bright = rgb_to_int(palette[n][0], palette[n][1], palette[n][2]);
-			// printf("%i\n", rgb_to_int2(n));
-			//printf("%f\n", bright);
-			//bright = 0xFFFFFF;
-			bright = get_rgb_smooth((double)n / map->fract.maxiterations);
-			if (n == map->fract.maxiterations)
+			bright = get_rgb_smooth((double)n / info->map->fract.maxiterations);
+			if (n == info->map->fract.maxiterations)
 				bright = 0;
 			pix = (x + y * WIDTH);
-			map->image[pix] = bright;
+			info->map->image[pix] = bright;
 			y++;
 		}
 		x++;
 	}
+}
+
+void	draw(t_mapinfo *map)
+{
+	unsigned	x;
+	pthread_t	threads[THREADS];
+	t_info		info[THREADS];
+	int			i;
+
+	i = 0;
+	x = 0;
+	while (i < THREADS)
+	{
+		info[i].map = map;
+		info[i].x = x;
+		x += WIDTH / THREADS;
+		info[i].end = x;
+		pthread_create(&threads[i], NULL, (void *(*)(void *))draw_mandelbrot, (void *)&info[i]);
+		i++;
+	}
+	while (i-- > 0)
+		pthread_join(threads[i], NULL);
 	mlx_put_image_to_window(map->mlx, map->win, map->image_ptr, 0, 0);
 }
 
@@ -182,6 +179,7 @@ int		main(int argc, char *argv[])
 {
 	t_mapinfo map;
 
+
 	if (argc != 2)
 		ft_putendl("Usage : ./fractol <filename>");
 	else
@@ -194,7 +192,7 @@ int		main(int argc, char *argv[])
 		else if (ft_strequ(argv[1], "mand"))
 		{
 			init_mandelbrot(&map);
-			draw_mandelbrot(&map);
+			draw(&map);
 		}
 		else if (ft_strequ(argv[1], "julia"))
 		{

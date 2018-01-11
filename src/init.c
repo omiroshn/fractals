@@ -12,7 +12,7 @@ void	init(t_mapinfo *map, char *str)
 void	init_mandelbrot(t_mapinfo *map)
 {
 	init(map, "mandelbrot fractol");
-	map->fract.maxiterations_const = 100;
+	map->fract.maxiterations_const = 50;
 	map->fract.maxiterations = map->fract.maxiterations_const;
 	map->fract.moveX = -0.5;
 	map->fract.moveY = 0;

@@ -18,8 +18,6 @@ void	draw_line(t_mapinfo *map, int len)
 				map->image[x + len * WIDTH + WIDTH / 2] = 255;
 				len++;
 			}
-			
-			
 			y++;
 		}
 		x++;
