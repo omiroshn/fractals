@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/07 16:26:45 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/11 21:20:01 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/12 19:52:53 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,177 +36,150 @@ int		get_rgb_smooth(double t)
 		(int)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255)));
 }
 
-void	draw_mandelbrot(t_info *info)
+void	draw_mandelbrot(t_info *i)
 {
-	double pr, pi;
-	int x;
-	int y;
-	double bright;
-	double old_a;
-	double old_b;
-	int n;
-	double new_a;
-	double new_b;
-	double ca;
-	double cb;
-	int pix;
-	int hue;
-	int saturation;
-	double newRe, newIm, oldRe, oldIm;
-	
-	x = info->x;
-	while (x < info->end)
+	i->y = i->cunt;
+	while (i->y < i->end)
 	{
-		y = 0;
-		while (y < HEIGHT)
+		i->c_im = MAP(i->y, 0, WIDTH, -2 * i->zoom, 2 * i->zoom);
+		i->x = 0;
+		while (i->x < HEIGHT)
 		{
-			// pr = 1.5 * (x - WIDTH / 2) / (0.5 * info->map->fract.zoom * WIDTH) + info->map->fract.moveX;
-			// pi = (y - HEIGHT / 2) / (0.5 * info->map->fract.zoom * HEIGHT) + info->map->fract.moveY;
-			// newRe = newIm = oldRe = oldIm = 0;
-			old_a = MAP(x, 0, WIDTH, -2 * info->map->fract.zoom, 2 * info->map->fract.zoom) + info->map->fract.moveX;
-			old_b = MAP(y, 0, HEIGHT, -2 * info->map->fract.zoom, 2 * info->map->fract.zoom) + info->map->fract.moveY;
+			i->c_re = MAP(i->x, 0, HEIGHT, -2 * i->zoom, 2 * i->zoom);
 
-			ca = old_a;
-			cb = old_b;
+			i->z_im = i->c_im;
+			i->z_re = i->c_re;
 
-			n = 0;
-			while (n < info->map->fract.maxiterations)
-			{
-				// oldRe = newRe;
-				// oldIm = newIm;
-				// newRe = oldRe * oldRe - oldIm * oldIm + pr;
-				// newIm = 2 * oldRe * oldIm + pi;
-				// if ((newRe * newRe + newIm * newIm) > 16)
-				// 	break;
-				new_a = old_a * old_a - old_b * old_b;
-				new_b = 2 * old_a * old_b;
-				old_a = new_a + ca;
-				old_b = new_b + cb;
-				if (fabs(old_a + old_b) > 4)
-					break;
-				n++;
-			}
-			bright = get_rgb_smooth((double)n / info->map->fract.maxiterations);
-			if (n == info->map->fract.maxiterations)
-				bright = 0;
-			pix = (x + y * WIDTH);
-			info->map->image[pix] = bright;
-			y++;
+			i->n = 0;
+			i->func(i);
+			i->bright = get_rgb_smooth((double)i->n / i->maxiterations);
+			if (i->n == i->maxiterations)
+				i->bright = 0;
+			i->pix = (i->x + i->y * WIDTH);
+			i->map.image[i->pix] = i->bright;
+			i->x++;
 		}
-		x++;
+		i->y++;
 	}
 }
 
-void	draw(t_mapinfo *map)
+void	draw(t_info *in)
 {
-	unsigned	x;
 	pthread_t	threads[THREADS];
+	int			*status_addr;
+	int			status;
 	t_info		info[THREADS];
+	unsigned	y;
 	int			i;
 
 	i = 0;
-	x = 0;
+	y = 0;
 	while (i < THREADS)
 	{
-		info[i].map = map;
-		info[i].x = x;
-		x += WIDTH / THREADS;
-		info[i].end = x;
+		info[i] = *in;
+		info[i].cunt = y;
+		y += HEIGHT / THREADS;
+		info[i].end = y;
 		pthread_create(&threads[i], NULL, (void *(*)(void *))draw_mandelbrot, (void *)&info[i]);
 		i++;
 	}
 	while (i-- > 0)
-		pthread_join(threads[i], NULL);
-	mlx_put_image_to_window(map->mlx, map->win, map->image_ptr, 0, 0);
+		if ((status = pthread_join(threads[i], (void**)&status_addr)))
+			printf("Error join thread\n");
+	mlx_put_image_to_window(in->map.mlx, in->map.win, in->map.image_ptr, 0, 0);
 }
 
-void	draw_julia(t_mapinfo *map)
+void	loops(t_info info)
 {
-	// int x;
-	// int y;
-	// float bright;
-	// float a;
-	// float b;
-	// float n;
-	// float aa;
-	// float bb;
-	// float ca;
-	// float cb;
-	// int pix;
-	
+	info.map.mlx = mlx_init();
+	info.map.win = mlx_new_window(info.map.mlx, WIDTH, HEIGHT, info.name);
+	info.map.image_ptr = mlx_new_image(info.map.mlx, WIDTH, HEIGHT);
+	info.map.image = (int *)mlx_get_data_addr(info.map.image_ptr,
+		&info.map.bits_per_pixel, &info.map.size, &info.map.endian);
+	draw(&info);
+	mlx_hook(info.map.win, 2, 5, key_function, &info);
+	mlx_hook(info.map.win, 17, 1L << 17, exit_func, &info);
+	//mlx_hook(info.map.win, 6, 5, mmotion, &info);
+	//mlx_mouse_hook(info.map.win, mouse_hook, &info);
+	mlx_loop(info.map.mlx);
+}
 
-	// x = 0;
-	// while (x < WIDTH)
-	// {
-	// 	y = 0;
-	// 	while (y < HEIGHT)
-	// 	{
-	// 		pix = (x + y * WIDTH);
+void	run(char *name)
+{
+	t_info info;
 
-	// 		a = ft_map(x, 0, WIDTH, -2, 2);
-	// 		b = ft_map(y, 0, HEIGHT, -2, 2);
+	if (ft_strequ(name, "mandelbrot"))
+		info.func = &iter_mandelbrot;
+	else if (ft_strequ(name, "julia"))
+		info.func = &iter_julia;
+	else if (ft_strequ(name, "mandelbar3"))
+		info.func = &iter_mandelbar3;
+	else if (ft_strequ(name, "mandelbar4"))
+		info.func = &iter_mandelbar4;
+	else if (ft_strequ(name, "mandelbar5"))
+		info.func = &iter_mandelbar5;
+	else if (ft_strequ(name, "perp_mandelbrot"))
+		info.func = &iter_perp_mand;
+	else if (ft_strequ(name, "celtic_mandelbar"))
+		info.func = &iter_celtic_mand;
+	else if (ft_strequ(name, "bs"))
+		info.func = &iter_burning_ship;
+	else if (ft_strequ(name, "bs_cubic"))
+		info.func = &iter_cubic_burning_ship;
+	else if (ft_strequ(name, "bs_perpend"))
+		info.func = &iter_bs_perpend;
+	else if (ft_strequ(name, "celtic_perpend"))
+		info.func = &iter_celtic_perpend;
+	else if (ft_strequ(name, "perpend_buffalo"))
+		info.func = &iter_perpend_buffalo;
+	init(name, &info);
+	loops(info);
+}
 
-	// 		ca = a;
-	// 		cb = b;
+void	options()
+{
+	ft_putendl("Usage : ./fractol <name>");
+	ft_putendl("                 -mandelbrot");
+	ft_putendl("                 -julia");
+	ft_putendl("                 -bs");
+	ft_putendl("                 -bs_cubic");
+	ft_putendl("                 -bs_perpend");
+	ft_putendl("                 -mandelbar3");
+	ft_putendl("                 -mandelbar4");
+	ft_putendl("                 -mandelbar5");
+	ft_putendl("                 -perp_mandelbrot");
+	ft_putendl("                 -celtic_mandelbar");
+	ft_putendl("                 -celtic_perpend");
+	ft_putendl("                 -perpend_buffalo");
+	exit(0);
+}
 
-	// 		n = 0;
-	// 		while (n < map->maxiterations)
-	// 		{
-	// 			aa = a * a - b * b;
-	// 			bb = 2 * a * b;
-	// 			a = aa + ca;
-	// 			b = bb + cb;
+void	check(int argc, char **a)
+{
+	int i;
 
-	// 			if (fabs(a + b) > 16)
-	// 				break;
-	// 			n++;
-	// 		}
-	// 		//bright = ft_map(n, 0, 100, 0, 0xFFFFFF);
-	// 		if (n == map->maxiterations)
-	// 			map->image[pix] = 0;
-	// 		else
-	// 			map->image[pix] = sqrt(n / map->maxiterations);
-			
-			
-	// 		y++;
-	// 	}
-	// 	x++;
-	// }
-	// mlx_put_image_to_window(map->mlx, map->win, map->image_ptr, 0, 0);
+	i = 0;
+	while (++i < argc)
+	{
+		if (!ft_strequ(a[i], "mandelbrot") && !ft_strequ(a[i], "julia")
+			&& !ft_strequ(a[i], "mandelbar3") && !ft_strequ(a[i], "mandelbar4")
+			&& !ft_strequ(a[i], "mandelbar5") && !ft_strequ(a[i], "perp_mandelbrot")
+			&& !ft_strequ(a[i], "celtic_mandelbar") && !ft_strequ(a[i], "bs")
+			&& !ft_strequ(a[i], "bs_cubic") && !ft_strequ(a[i], "bs_perpend")
+			&& !ft_strequ(a[i], "iter_celtic_perpend") && !ft_strequ(a[i], "perpend_buffalo"))
+		{
+			ft_putstr("Wrong arguments! ");
+			ft_putendl("try:");
+			options();
+		}
+	}
 }
 
 int		main(int argc, char *argv[])
 {
-	t_mapinfo map;
-
-
 	if (argc != 2)
-		ft_putendl("Usage : ./fractol <filename>");
-	else
-	{
-		if (ft_strequ(argv[1], "tree"))
-		{
-			init_fract_tree(&map);
-			draw_fract_tree(&map);
-		}
-		else if (ft_strequ(argv[1], "mand"))
-		{
-			init_mandelbrot(&map);
-			draw(&map);
-		}
-		else if (ft_strequ(argv[1], "julia"))
-		{
-			init_julia(&map);
-			draw_julia(&map);
-		}
-		else
-		{
-			ft_putendl("Usage : ./fractol <filename>\n<tree>\n<mand>\n<julia>");
-			exit(1);
-		}
-		mlx_hook(map.win, 2, 5, key_function, &map);
-		mlx_hook(map.win, 17, 1L << 17, exit_func, &map);
-		mlx_loop(map.mlx);
-	}
+		options();
+	check(argc, argv);
+	run(argv[1]);
 	return (0);
 }

@@ -1,32 +1,192 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/12 15:15:39 by omiroshn          #+#    #+#             */
+/*   Updated: 2018/01/12 19:44:30 by omiroshn         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fract.h"
 
-void	init(t_mapinfo *map, char *str)
+void	init(char *name, t_info *i)
 {
-	map->mlx = mlx_init();
-	map->win = mlx_new_window(map->mlx, WIDTH, HEIGHT, str);
-	map->image_ptr = mlx_new_image(map->mlx, WIDTH, HEIGHT);
-	map->image = (int *)mlx_get_data_addr(map->image_ptr, &map->bits_per_pixel,
-										&map->size_line, &map->endian);
+	i->name = name;
+	i->maxiterations = 50;
+	i->moveX = -0.5;
+	i->moveY = 0;
+	i->zoom = 1;
 }
 
-void	init_mandelbrot(t_mapinfo *map)
+void	iter_mandelbrot(t_info *i)
 {
-	init(map, "mandelbrot fractol");
-	map->fract.maxiterations_const = 50;
-	map->fract.maxiterations = map->fract.maxiterations_const;
-	map->fract.moveX = -0.5;
-	map->fract.moveY = 0;
-	map->fract.zoom = 1;
+	while (i->n < i->maxiterations)
+	{
+		i->z_re2 = i->z_re * i->z_re;
+		i->z_im2 = i->z_im * i->z_im;
+		if (i->z_re2 + i->z_im2 > 4)
+			break;
+		i->z_im = 2 * i->z_re * i->z_im + i->c_im;
+		i->z_re = i->z_re2 - i->z_im2 + i->c_re;
+		i->n++;
+	}
 }
 
-void	init_julia(t_mapinfo *map)
+void	iter_julia(t_info *i)
 {
-	init(map, "julia fractol");
-	map->fract.maxiterations_const = 100;
-	map->fract.maxiterations = map->fract.maxiterations_const;
+	while (i->n < i->maxiterations)
+	{
+		i->z_re2 = i->z_re * i->z_re;
+		i->z_im2 = i->z_im * i->z_im;
+		if (i->z_re2 + i->z_im2 > 4)
+			break;
+		i->z_im = 2 * i->z_re * i->z_im + 0.6;
+		i->z_re = i->z_re2 - i->z_im2 - 0.4;
+		i->n++;
+	}
 }
 
-void	init_fract_tree(t_mapinfo *map)
+void	iter_mandelbar3(t_info *i)
 {
-	init(map, "fractol tree");
+	while (i->n < i->maxiterations)
+	{
+		i->z_re2 = i->z_re * i->z_re;
+		i->z_im2 = i->z_im * i->z_im;
+		if (i->z_re2 + i->z_im2 > 4)
+			break;
+		i->z_im = i->z_re * i->z_im * -2.0 + i->c_im;
+		i->z_re = i->z_re2 - i->z_im2 + i->c_re;
+		i->n++;
+	}
 }
+
+void	iter_mandelbar4(t_info *i)
+{
+	while (i->n < i->maxiterations)
+	{
+		i->z_re2 = i->z_re * i->z_re;
+		i->z_im2 = i->z_im * i->z_im;
+		if (i->z_re2 + i->z_im2 > 4)
+			break;
+		i->z_im = (i->z_re2 * 3.0 - i->z_im2) * i->z_im + i->c_im;
+		i->z_re = -(i->z_re2 - i->z_im2 * 3.0) * i->z_re + i->c_re;
+		i->n++;
+	}
+}
+
+void	iter_mandelbar5(t_info *i)
+{
+	while (i->n < i->maxiterations)
+	{
+		i->z_re2 = i->z_re * i->z_re;
+		i->z_im2 = i->z_im * i->z_im;
+		if (i->z_re2 + i->z_im2 > 4)
+			break;
+		i->z_im = -4 * i->z_re * i->z_im * (i->z_re2 - i->z_im2) + i->c_im;
+		i->z_re = i->z_re2 * i->z_re2 + i->z_im2 * i->z_im2 - 6 * i->z_re2 * i->z_im2 + i->c_re;
+		i->n++;
+	}
+}
+
+void	iter_perp_mand(t_info *i)
+{
+	while (i->n < i->maxiterations)
+	{
+		i->z_re2 = i->z_re * i->z_re;
+		i->z_im2 = i->z_im * i->z_im;
+		if (i->z_re2 + i->z_im2 > 4)
+			break;
+		i->z_im = fabs(i->z_re) * i->z_im * -2.0 + i->c_im;
+		i->z_re = i->z_re2 - i->z_im2 + i->c_re;
+		i->n++;
+	}
+}
+
+void	iter_celtic_mand(t_info *i)
+{
+	while (i->n < i->maxiterations)
+	{
+		i->z_re2 = i->z_re * i->z_re;
+		i->z_im2 = i->z_im * i->z_im;
+		if (i->z_re2 + i->z_im2 > 4)
+			break;
+		i->z_im = i->z_re * i->z_im * -2.0 + i->c_im;
+		i->z_re = fabs(i->z_re2 - i->z_im2) + i->c_re;
+		i->n++;
+	}
+}
+
+void	iter_burning_ship(t_info *i)
+{
+	while (i->n < i->maxiterations)
+	{
+		i->z_re2 = i->z_re * i->z_re;
+		i->z_im2 = i->z_im * i->z_im;
+		if (i->z_re2 + i->z_im2 > 4)
+			break;
+		i->z_im = fabs(i->z_re * i->z_im) * -2.0 + i->c_im;
+		i->z_re = i->z_re2 - i->z_im2 + i->c_re;
+		i->n++;
+	}
+}
+
+void	iter_cubic_burning_ship(t_info *i)
+{
+	while (i->n < i->maxiterations)
+	{
+		i->z_re2 = i->z_re * i->z_re;
+		i->z_im2 = i->z_im * i->z_im;
+		if (i->z_re2 + i->z_im2 > 4)
+			break;
+		i->z_im = -(i->z_re2 * 3.0 - i->z_im2) * fabs(i->z_im) + i->c_im;
+		i->z_re = (i->z_re2 - i->z_im2 * 3.0) * fabs(i->z_re) + i->c_re;
+		i->n++;
+	}
+}
+
+void	iter_bs_perpend(t_info *i)
+{
+	while (i->n < i->maxiterations)
+	{
+		i->z_re2 = i->z_re * i->z_re;
+		i->z_im2 = i->z_im * i->z_im;
+		if (i->z_re2 + i->z_im2 > 4)
+			break;
+		i->z_im = i->z_re * fabs(i->z_im) * -2.0 + i->c_im;
+		i->z_re = i->z_re2 - i->z_im2 + i->c_re;
+		i->n++;
+	}
+}
+
+void	iter_celtic_perpend(t_info *i)
+{
+	while (i->n < i->maxiterations)
+	{
+		i->z_re2 = i->z_re * i->z_re;
+		i->z_im2 = i->z_im * i->z_im;
+		if (i->z_re2 + i->z_im2 > 4)
+			break;
+		i->z_im = fabs(i->z_re) * i->z_im * -2.0 + i->c_im;
+		i->z_re = fabs(i->z_re2 - i->z_im2) + i->c_re;
+		i->n++;
+	}
+}
+
+void	iter_perpend_buffalo(t_info *i)
+{
+	while (i->n < i->maxiterations)
+	{
+		i->z_re2 = i->z_re * i->z_re;
+		i->z_im2 = i->z_im * i->z_im;
+		if (i->z_re2 + i->z_im2 > 4)
+			break;
+		i->z_im = i->z_re * fabs(i->z_im) * -2.0 + i->c_im;
+		i->z_re = fabs(i->z_re2 - i->z_im2) + i->c_re;
+		i->n++;
+	}
+}
+
+
