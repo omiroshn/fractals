@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/07 18:24:30 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/12 19:42:44 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/22 17:53:22 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,16 @@ typedef	struct	s_mapinfo
 
 typedef struct	s_info
 {
+	double		k_re;
+	double		k_im;
+	int			is_julia;
+	double		re_factor;
+	double		im_factor;
+	double		dre;
+	double		minre;
+	double		minim;
+	double		maxre;
+	double		maxim;
 	char		*name;
 	unsigned	x;
 	unsigned	y;
@@ -92,6 +102,7 @@ typedef struct	s_info
 }				t_info;
 
 void	draw(t_info *in);
+void	threads_crete(t_info *in);
 
 void	iter_julia(t_info *i);
 void	iter_mandelbrot(t_info *i);
@@ -112,6 +123,8 @@ void	init_julia(t_info *i);
 
 int		exit_func(void *param);
 int		key_function(int keycode, void *param);
+int		mouse_hook(int mousecode, int x, int y, t_info *i);
+int		julia_motion(int x, int y, t_info *i);
 double	ft_map(double value, double istart, double iend, double ostart, double oend);
 
 #endif

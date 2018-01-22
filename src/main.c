@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/07 16:26:45 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/12 19:52:53 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/22 19:12:45 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,11 @@ void	draw(t_info *i)
 	i->y = i->cunt;
 	while (i->y < i->end)
 	{
-		i->c_im = MAP(i->y, 0, WIDTH, -2 * i->zoom, 2 * i->zoom);
+		i->c_im = i->minim + (WIDTH - i->y) * i->im_factor;
 		i->x = 0;
 		while (i->x < HEIGHT)
 		{
-			i->c_re = MAP(i->x, 0, HEIGHT, -2 * i->zoom, 2 * i->zoom);
+			i->c_re = i->minre + i->x * i->re_factor;
 
 			i->z_im = i->c_im;
 			i->z_re = i->c_re;
@@ -72,6 +72,8 @@ void	threads_crete(t_info *in)
 	unsigned	y;
 	int			i;
 
+	in->re_factor = in->dre / (WIDTH - 1);
+	in->im_factor = in->dre / (HEIGHT - 1);
 	i = 0;
 	y = 0;
 	while (i < THREADS)
@@ -99,9 +101,26 @@ void	loops(t_info info)
 	threads_crete(&info);
 	mlx_hook(info.map.win, 2, 5, key_function, &info);
 	mlx_hook(info.map.win, 17, 1L << 17, exit_func, &info);
-	//mlx_hook(info.map.win, 6, 5, mmotion, &info);
-	//mlx_mouse_hook(info.map.win, mouse_hook, &info);
+	mlx_hook(info.map.win, 6, 5, julia_motion, &info);
+	mlx_mouse_hook(info.map.win, mouse_hook, &info);
 	mlx_loop(info.map.mlx);
+}
+
+void	init(char *name, t_info *i)
+{
+	i->name = name;
+	i->maxiterations = 50;
+	i->moveX = -0.5;
+	i->moveY = 0;
+	i->zoom = 1;
+	i->minre = -2.0;
+	i->minim = -2.0;
+	i->maxre = 2.0;
+	i->maxim = 2.0;
+	i->dre = 4.0;
+	i->is_julia = -1;
+	i->k_im = 0.6;
+	i->k_re = -0.4;
 }
 
 void	run(char *name)
@@ -166,7 +185,7 @@ void	check(int argc, char **a)
 			&& !ft_strequ(a[i], "mandelbar5") && !ft_strequ(a[i], "perp_mandelbrot")
 			&& !ft_strequ(a[i], "celtic_mandelbar") && !ft_strequ(a[i], "bs")
 			&& !ft_strequ(a[i], "bs_cubic") && !ft_strequ(a[i], "bs_perpend")
-			&& !ft_strequ(a[i], "iter_celtic_perpend") && !ft_strequ(a[i], "perpend_buffalo"))
+			&& !ft_strequ(a[i], "celtic_perpend") && !ft_strequ(a[i], "perpend_buffalo"))
 		{
 			ft_putstr("Wrong arguments! ");
 			ft_putendl("try:");

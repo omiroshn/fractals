@@ -6,20 +6,11 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/12 15:15:39 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/12 19:44:30 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/22 19:16:55 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fract.h"
-
-void	init(char *name, t_info *i)
-{
-	i->name = name;
-	i->maxiterations = 50;
-	i->moveX = -0.5;
-	i->moveY = 0;
-	i->zoom = 1;
-}
 
 void	iter_mandelbrot(t_info *i)
 {
@@ -43,8 +34,8 @@ void	iter_julia(t_info *i)
 		i->z_im2 = i->z_im * i->z_im;
 		if (i->z_re2 + i->z_im2 > 4)
 			break;
-		i->z_im = 2 * i->z_re * i->z_im + 0.6;
-		i->z_re = i->z_re2 - i->z_im2 - 0.4;
+		i->z_im = 2 * i->z_re * i->z_im + i->k_im;
+		i->z_re = i->z_re2 - i->z_im2 + i->k_re;
 		i->n++;
 	}
 }
