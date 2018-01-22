@@ -36,7 +36,7 @@ int		get_rgb_smooth(double t)
 		(int)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255)));
 }
 
-void	draw_mandelbrot(t_info *i)
+void	draw(t_info *i)
 {
 	i->y = i->cunt;
 	while (i->y < i->end)
@@ -63,7 +63,7 @@ void	draw_mandelbrot(t_info *i)
 	}
 }
 
-void	draw(t_info *in)
+void	threads_crete(t_info *in)
 {
 	pthread_t	threads[THREADS];
 	int			*status_addr;
@@ -80,7 +80,7 @@ void	draw(t_info *in)
 		info[i].cunt = y;
 		y += HEIGHT / THREADS;
 		info[i].end = y;
-		pthread_create(&threads[i], NULL, (void *(*)(void *))draw_mandelbrot, (void *)&info[i]);
+		pthread_create(&threads[i], NULL, (void *(*)(void *))draw, (void *)&info[i]);
 		i++;
 	}
 	while (i-- > 0)
@@ -96,7 +96,7 @@ void	loops(t_info info)
 	info.map.image_ptr = mlx_new_image(info.map.mlx, WIDTH, HEIGHT);
 	info.map.image = (int *)mlx_get_data_addr(info.map.image_ptr,
 		&info.map.bits_per_pixel, &info.map.size, &info.map.endian);
-	draw(&info);
+	threads_crete(&info);
 	mlx_hook(info.map.win, 2, 5, key_function, &info);
 	mlx_hook(info.map.win, 17, 1L << 17, exit_func, &info);
 	//mlx_hook(info.map.win, 6, 5, mmotion, &info);

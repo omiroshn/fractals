@@ -18,26 +18,26 @@ int		key_function(int keycode, void *param)
 
 	i = (t_info *)param;
 	mlx_clear_window(i->map.mlx, i->map.win);
-	if (keycode == MAC_ESC_BUT)
+	if (keycode == LINUX_ESC_BUT)
 		exit_func(i);
-	else if (keycode == MAC_BUT_PLUS)
+	else if (keycode == LINUX_BUT_PLUS)
 		i->maxiterations += 1;
-	else if (keycode == MAC_BUT_MINUS)
+	else if (keycode == LINUX_BUT_MINUS)
 		i->maxiterations -= 1;
-	else if (keycode == MAC_ARROW_LEFT)
+	else if (keycode == LINUX_ARROW_LEFT)
 		i->moveX -= 0.02;
-	else if (keycode == MAC_ARROW_RIGHT)
+	else if (keycode == LINUX_ARROW_RIGHT)
 		i->moveX += 0.02;
-	else if (keycode == MAC_ARROW_UP)
+	else if (keycode == LINUX_ARROW_UP)
 		i->moveY -= 0.02;
-	else if (keycode == MAC_ARROW_DOWN)
+	else if (keycode == LINUX_ARROW_DOWN)
 		i->moveY += 0.02;
-	else if (keycode == MAC_BUT_1)
+	else if (keycode == LINUX_BUT_1)
 	{
 		i->zoom *= 1.02;
 		//i->maxiterations = fabs(i->maxiterations * 1.01 + 2);
 	}
-	else if (keycode == MAC_BUT_2)
+	else if (keycode == LINUX_BUT_2)
 	{
 		i->zoom *= 0.98;
 		// i->maxiterations = fabs(i->maxiterations * 0.99 - 2);

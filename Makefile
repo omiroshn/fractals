@@ -3,7 +3,7 @@ FILES = main errors init key_func fract_tree
 SRC = $(addprefix src/, $(addsuffix .c, $(FILES)))
 OBJ = $(addprefix obj/, $(addsuffix .o, $(FILES)))
 DEBUG = -g -O3
-FLAGS = -I.
+FLAGS = -I. -pthread
 CGFLAGS_LINUX = -lm -lmlx -lXext -lX11
 CGFLAGS_MAC = -lmlx -framework OpenGL -framework AppKit
 NAME = fractol
@@ -11,11 +11,11 @@ NAME = fractol
 all: $(NAME)
 
 $(NAME): $(OBJ) libft/libft.a
-	$(CC) $(DEBUG) -o $(NAME) $(OBJ) $(FLAGS) $(CGFLAGS_MAC) libft/libft.a
+	$(CC) $(DEBUG) -o $(NAME) $(OBJ) $(FLAGS) $(CGFLAGS_LINUX) libft/libft.a
+	@printf '\033[32m[ ✔ ] %s\n\033[0m' "fractol is done!"
 
 libft/libft.a:
 	@make -C libft/
-	@printf '\033[32m[ ✔ ] %s\n\033[0m' "libft is done!"
 obj/%.o: src/%.c
 	$(CC) -c $^ -o $@ $(DEBUG) $(FLAGS)
 clean:
