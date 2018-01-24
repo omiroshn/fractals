@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/12 15:15:49 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/22 18:25:53 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/24 15:31:50 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,25 +15,13 @@
 static void	move_arrows(int key, t_info *i)
 {
 	if (key == MAC_ARROW_LEFT)
-	{
 		i->minre -= 0.05 * i->dre;
-		i->maxre -= 0.05 * i->dre;
-	}
 	else if (key == MAC_ARROW_RIGHT)
-	{
-		i->maxre += 0.05 * i->dre;
 		i->minre += 0.05 * i->dre;
-	}
 	else if (key == MAC_ARROW_UP)
-	{
-		i->maxim += 0.05 * i->dre;
 		i->minim += 0.05 * i->dre;
-	}
 	else if (key == MAC_ARROW_DOWN)
-	{
-		i->maxim -= 0.05 * i->dre;
 		i->minim -= 0.05 * i->dre;
-	}
 }
 
 static void	iterations(int key, t_info *i)
@@ -58,6 +46,7 @@ void	reset(t_info *i)
 	i->maxiterations = 50;
 	i->k_re = -0.4;
 	i->k_im = 0.6;
+	i->offset = 0;
 }
 
 int			key_function(int keycode, void *param)
@@ -76,6 +65,12 @@ int			key_function(int keycode, void *param)
 		i->is_julia = -(i->is_julia);
 	if (keycode == 15)
 		reset(i);
+	if (keycode == 83)
+		i->offset = 0;
+	if (keycode == 84)
+		i->offset = 1;
+	if (keycode == 85)
+		i->offset = 2;
 	threads_crete(i);
 	return (0);
 }

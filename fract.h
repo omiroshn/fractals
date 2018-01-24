@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/07 18:24:30 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/22 17:53:22 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/24 15:32:29 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,13 @@
 # include <mlx.h>
 # include <pthread.h>
 
+typedef unsigned char t_byte;
+typedef union	u_color
+{
+	int			color;
+	t_byte		channel[4];
+}				t_color;
+
 typedef struct	s_complex
 {
 	float		real;
@@ -69,6 +76,7 @@ typedef	struct	s_mapinfo
 
 typedef struct	s_info
 {
+	int			offset;
 	double		k_re;
 	double		k_im;
 	int			is_julia;
@@ -77,8 +85,6 @@ typedef struct	s_info
 	double		dre;
 	double		minre;
 	double		minim;
-	double		maxre;
-	double		maxim;
 	char		*name;
 	unsigned	x;
 	unsigned	y;
