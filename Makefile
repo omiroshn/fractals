@@ -1,9 +1,10 @@
 CC = clang
-FILES = main errors init key_func fract_tree
+FILES = main errors key_func iter iter2 iter3 init draw
 SRC = $(addprefix src/, $(addsuffix .c, $(FILES)))
 OBJ = $(addprefix obj/, $(addsuffix .o, $(FILES)))
 DEBUG = -g
-FLAGS = -I. -Ofast
+SPEED = 
+FLAGS = -I. -Wall -Wextra -Werror
 CGFLAGS_LINUX = -lm -lmlx -lXext -lX11 -pthread
 CGFLAGS_MAC = -lmlx -framework OpenGL -framework AppKit
 NAME = fractol
@@ -11,7 +12,7 @@ NAME = fractol
 all: $(NAME)
 
 $(NAME): $(OBJ) libft/libft.a
-	$(CC) $(DEBUG) -o $(NAME) $(OBJ) $(FLAGS) $(CGFLAGS_MAC) libft/libft.a
+	$(CC) $(DEBUG) -o $(NAME) $(OBJ) $(FLAGS) $(SPEED) $(CGFLAGS_MAC) libft/libft.a
 	@printf '\033[32m[ ✔ ] %s\n\033[0m' "fractol is done!"
 
 libft/libft.a:

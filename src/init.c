@@ -6,178 +6,62 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/12 15:15:39 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/22 19:16:55 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/24 19:56:24 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fract.h"
 
-void	iter_mandelbrot(t_info *i)
+void	init_func(t_info *info, char **argv, int cunt, int i)
 {
-	while (i->n < i->maxiterations)
-	{
-		i->z_re2 = i->z_re * i->z_re;
-		i->z_im2 = i->z_im * i->z_im;
-		if (i->z_re2 + i->z_im2 > 4)
-			break;
-		i->z_im = 2 * i->z_re * i->z_im + i->c_im;
-		i->z_re = i->z_re2 - i->z_im2 + i->c_re;
-		i->n++;
-	}
+	if (ft_strequ(argv[cunt], "mandelbrot"))
+		info[i].func = &iter_mandelbrot;
+	else if (ft_strequ(argv[cunt], "julia"))
+		info[i].func = &iter_julia;
+	else if (ft_strequ(argv[cunt], "mandelbar3"))
+		info[i].func = &iter_mandelbar3;
+	else if (ft_strequ(argv[cunt], "mandelbar4"))
+		info[i].func = &iter_mandelbar4;
+	else if (ft_strequ(argv[cunt], "mandelbar5"))
+		info[i].func = &iter_mandelbar5;
+	else if (ft_strequ(argv[cunt], "perp_mandelbrot"))
+		info[i].func = &iter_perp_mand;
+	else if (ft_strequ(argv[cunt], "celtic_mandelbar"))
+		info[i].func = &iter_celtic_mand;
+	else if (ft_strequ(argv[cunt], "bs"))
+		info[i].func = &iter_burning_ship;
+	else if (ft_strequ(argv[cunt], "bs_cubic"))
+		info[i].func = &iter_cubic_burning_ship;
+	else if (ft_strequ(argv[cunt], "bs_perpend"))
+		info[i].func = &iter_bs_perpend;
+	else if (ft_strequ(argv[cunt], "celtic_perpend"))
+		info[i].func = &iter_celtic_perpend;
+	else if (ft_strequ(argv[cunt], "perpend_buffalo"))
+		info[i].func = &iter_perpend_buffalo;
 }
 
-void	iter_julia(t_info *i)
+void	reset(t_info *i)
 {
-	while (i->n < i->maxiterations)
-	{
-		i->z_re2 = i->z_re * i->z_re;
-		i->z_im2 = i->z_im * i->z_im;
-		if (i->z_re2 + i->z_im2 > 4)
-			break;
-		i->z_im = 2 * i->z_re * i->z_im + i->k_im;
-		i->z_re = i->z_re2 - i->z_im2 + i->k_re;
-		i->n++;
-	}
+	i->minre = -2.0;
+	i->minim = -2.0;
+	i->dre = 4.0;
+	i->maxiterations = 50;
+	i->k_re = -0.4;
+	i->k_im = 0.6;
+	i->offset = 0;
 }
 
-void	iter_mandelbar3(t_info *i)
+void	init(char *name, t_info *i)
 {
-	while (i->n < i->maxiterations)
-	{
-		i->z_re2 = i->z_re * i->z_re;
-		i->z_im2 = i->z_im * i->z_im;
-		if (i->z_re2 + i->z_im2 > 4)
-			break;
-		i->z_im = i->z_re * i->z_im * -2.0 + i->c_im;
-		i->z_re = i->z_re2 - i->z_im2 + i->c_re;
-		i->n++;
-	}
+	i->name = name;
+	i->maxiterations = 50;
+	i->move_x = -0.5;
+	i->move_y = 0;
+	i->zoom = 1;
+	i->minre = -2.0;
+	i->minim = -2.0;
+	i->dre = 4.0;
+	i->is_julia = -1;
+	i->k_im = 0.6;
+	i->k_re = -0.4;
 }
-
-void	iter_mandelbar4(t_info *i)
-{
-	while (i->n < i->maxiterations)
-	{
-		i->z_re2 = i->z_re * i->z_re;
-		i->z_im2 = i->z_im * i->z_im;
-		if (i->z_re2 + i->z_im2 > 4)
-			break;
-		i->z_im = (i->z_re2 * 3.0 - i->z_im2) * i->z_im + i->c_im;
-		i->z_re = -(i->z_re2 - i->z_im2 * 3.0) * i->z_re + i->c_re;
-		i->n++;
-	}
-}
-
-void	iter_mandelbar5(t_info *i)
-{
-	while (i->n < i->maxiterations)
-	{
-		i->z_re2 = i->z_re * i->z_re;
-		i->z_im2 = i->z_im * i->z_im;
-		if (i->z_re2 + i->z_im2 > 4)
-			break;
-		i->z_im = -4 * i->z_re * i->z_im * (i->z_re2 - i->z_im2) + i->c_im;
-		i->z_re = i->z_re2 * i->z_re2 + i->z_im2 * i->z_im2 - 6 * i->z_re2 * i->z_im2 + i->c_re;
-		i->n++;
-	}
-}
-
-void	iter_perp_mand(t_info *i)
-{
-	while (i->n < i->maxiterations)
-	{
-		i->z_re2 = i->z_re * i->z_re;
-		i->z_im2 = i->z_im * i->z_im;
-		if (i->z_re2 + i->z_im2 > 4)
-			break;
-		i->z_im = fabs(i->z_re) * i->z_im * -2.0 + i->c_im;
-		i->z_re = i->z_re2 - i->z_im2 + i->c_re;
-		i->n++;
-	}
-}
-
-void	iter_celtic_mand(t_info *i)
-{
-	while (i->n < i->maxiterations)
-	{
-		i->z_re2 = i->z_re * i->z_re;
-		i->z_im2 = i->z_im * i->z_im;
-		if (i->z_re2 + i->z_im2 > 4)
-			break;
-		i->z_im = i->z_re * i->z_im * -2.0 + i->c_im;
-		i->z_re = fabs(i->z_re2 - i->z_im2) + i->c_re;
-		i->n++;
-	}
-}
-
-void	iter_burning_ship(t_info *i)
-{
-	while (i->n < i->maxiterations)
-	{
-		i->z_re2 = i->z_re * i->z_re;
-		i->z_im2 = i->z_im * i->z_im;
-		if (i->z_re2 + i->z_im2 > 4)
-			break;
-		i->z_im = fabs(i->z_re * i->z_im) * -2.0 + i->c_im;
-		i->z_re = i->z_re2 - i->z_im2 + i->c_re;
-		i->n++;
-	}
-}
-
-void	iter_cubic_burning_ship(t_info *i)
-{
-	while (i->n < i->maxiterations)
-	{
-		i->z_re2 = i->z_re * i->z_re;
-		i->z_im2 = i->z_im * i->z_im;
-		if (i->z_re2 + i->z_im2 > 4)
-			break;
-		i->z_im = -(i->z_re2 * 3.0 - i->z_im2) * fabs(i->z_im) + i->c_im;
-		i->z_re = (i->z_re2 - i->z_im2 * 3.0) * fabs(i->z_re) + i->c_re;
-		i->n++;
-	}
-}
-
-void	iter_bs_perpend(t_info *i)
-{
-	while (i->n < i->maxiterations)
-	{
-		i->z_re2 = i->z_re * i->z_re;
-		i->z_im2 = i->z_im * i->z_im;
-		if (i->z_re2 + i->z_im2 > 4)
-			break;
-		i->z_im = i->z_re * fabs(i->z_im) * -2.0 + i->c_im;
-		i->z_re = i->z_re2 - i->z_im2 + i->c_re;
-		i->n++;
-	}
-}
-
-void	iter_celtic_perpend(t_info *i)
-{
-	while (i->n < i->maxiterations)
-	{
-		i->z_re2 = i->z_re * i->z_re;
-		i->z_im2 = i->z_im * i->z_im;
-		if (i->z_re2 + i->z_im2 > 4)
-			break;
-		i->z_im = fabs(i->z_re) * i->z_im * -2.0 + i->c_im;
-		i->z_re = fabs(i->z_re2 - i->z_im2) + i->c_re;
-		i->n++;
-	}
-}
-
-void	iter_perpend_buffalo(t_info *i)
-{
-	while (i->n < i->maxiterations)
-	{
-		i->z_re2 = i->z_re * i->z_re;
-		i->z_im2 = i->z_im * i->z_im;
-		if (i->z_re2 + i->z_im2 > 4)
-			break;
-		i->z_im = i->z_re * fabs(i->z_im) * -2.0 + i->c_im;
-		i->z_re = fabs(i->z_re2 - i->z_im2) + i->c_re;
-		i->n++;
-	}
-}
-
-

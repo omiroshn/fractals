@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/12 15:15:49 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/24 15:31:50 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/24 18:47:37 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,6 @@ static void	iterations(int key, t_info *i)
 	if (key == MAC_BUT_MINUS)
 		if (i->maxiterations > 2)
 			i->maxiterations *= 0.95;
-}
-
-void	reset(t_info *i)
-{
-	i->minre = -2.0;
-	i->minim = -2.0;
-	i->dre = 4.0;
-	i->maxiterations = 50;
-	i->k_re = -0.4;
-	i->k_im = 0.6;
-	i->offset = 0;
 }
 
 int			key_function(int keycode, void *param)
