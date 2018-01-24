@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/12 15:15:49 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/24 18:47:37 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/24 21:42:18 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,8 @@ static void	iterations(int key, t_info *i)
 			i->maxiterations *= 0.95;
 }
 
-int			key_function(int keycode, void *param)
+int			key_function(int keycode, t_info *i)
 {
-	t_info *i;
-
-	i = (t_info *)param;
 	mlx_clear_window(i->map.mlx, i->map.win);
 	if (keycode == MAC_ESC_BUT)
 		exit_func(i);

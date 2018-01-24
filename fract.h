@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/07 18:24:30 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/24 20:02:49 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/24 22:08:41 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,8 +126,9 @@ void					init_julia(t_info *i);
 void					init_func(t_info *info, char **argv, int cunt, int i);
 
 void					options(void);
+void					options2(void);
 int						exit_func(void *param);
-int						key_function(int keycode, void *param);
+int						key_function(int keycode, t_info *param);
 int						mouse_hook(int mousecode, int x, int y, t_info *i);
 int						julia_motion(int x, int y, t_info *i);
 double					ft_map(double value, double istart,

@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/12 15:15:27 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/24 19:12:07 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/24 22:08:29 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,12 @@ void	options(void)
 	ft_putstr("./fractol mandelbrot julia bs bs_cubic bs_perpend ");
 	ft_putstr("mandelbar3 mandelbar4 mandelbar5 perp_mandelbrot ");
 	ft_putstr("celtic_mandelbar celtic_perpend perpend_buffalo\n");
+	exit(0);
+}
+
+void	options2(void)
+{
+	ft_putendl("Error. You can't enter more, than 12 fractols");
+	ft_putendl("Try again by ./fractol <name>");
 	exit(0);
 }

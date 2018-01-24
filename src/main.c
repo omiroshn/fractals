@@ -6,24 +6,23 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/07 16:26:45 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/24 21:00:35 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/24 22:10:00 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fract.h"
 
-void	loops(t_info info, void *mlx)
+void	loops(t_info *info)
 {
-	info.map.mlx = mlx;
-	info.map.win = mlx_new_window(info.map.mlx, WIDTH, HEIGHT, info.name);
-	info.map.image_ptr = mlx_new_image(info.map.mlx, WIDTH, HEIGHT);
-	info.map.image = (int *)mlx_get_data_addr(info.map.image_ptr,
-		&info.map.bits_per_pixel, &info.map.size, &info.map.endian);
-	threads_crete(&info);
-	mlx_hook(info.map.win, 2, 5, key_function, &info);
-	mlx_hook(info.map.win, 17, 5, exit_func, &info);
-	mlx_hook(info.map.win, 6, 5, julia_motion, &info);
-	mlx_mouse_hook(info.map.win, mouse_hook, &info);
+	info->map.win = mlx_new_window(info->map.mlx, WIDTH, HEIGHT, info->name);
+	info->map.image_ptr = mlx_new_image(info->map.mlx, WIDTH, HEIGHT);
+	info->map.image = (int *)mlx_get_data_addr(info->map.image_ptr,
+		&info->map.bits_per_pixel, &info->map.size, &info->map.endian);
+	threads_crete(info);
+	mlx_hook(info->map.win, 2, 5, key_function, info);
+	mlx_hook(info->map.win, 17, 5, exit_func, info);
+	mlx_hook(info->map.win, 6, 5, julia_motion, info);
+	mlx_mouse_hook(info->map.win, mouse_hook, info);
 }
 
 void	check(int argc, char **a)
@@ -66,10 +65,12 @@ void	run(int argc, char **argv)
 	mlx = mlx_init();
 	while (cunt < argc)
 	{
+		info[i].map.mlx = mlx;
 		init_func(info, argv, cunt, i);
 		init(argv[cunt], &info[i]);
-		loops(info[i++], mlx);
+		loops(&info[i]);
 		cunt++;
+		i++;
 	}
 	mlx_loop(mlx);
 }
@@ -78,6 +79,8 @@ int		main(int argc, char **argv)
 {
 	if (argc < 2)
 		options();
+	if (argc > 13)
+		options2();
 	check(argc, argv);
 	run(argc, argv);
 	return (0);
