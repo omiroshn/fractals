@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/12 15:15:49 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/24 21:42:18 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/24 22:21:14 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,19 +43,19 @@ int			key_function(int keycode, t_info *i)
 	mlx_clear_window(i->map.mlx, i->map.win);
 	if (keycode == MAC_ESC_BUT)
 		exit_func(i);
-	if (keycode == 27 || keycode == 24)
+	if (keycode == MAC_BUT_MINUS || keycode == MAC_BUT_PLUS)
 		iterations(keycode, i);
-	if (keycode > 122 && keycode < 127)
+	if (keycode > MAC_ARROW_LEFT - 1 && keycode < MAC_ARROW_UP + 1)
 		move_arrows(keycode, i);
-	if (keycode == 49)
+	if (keycode == MAC_SPACE)
 		i->is_julia = -(i->is_julia);
-	if (keycode == 15)
+	if (keycode == MAC_BUT_R)
 		reset(i);
-	if (keycode == 83)
+	if (keycode == MAC_BUT_1)
 		i->offset = 0;
-	if (keycode == 84)
+	if (keycode == MAC_BUT_2)
 		i->offset = 1;
-	if (keycode == 85)
+	if (keycode == MAC_BUT_3)
 		i->offset = 2;
 	threads_crete(i);
 	return (0);

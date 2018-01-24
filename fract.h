@@ -6,7 +6,7 @@
 /*   By: omiroshn <omiroshn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/07 18:24:30 by omiroshn          #+#    #+#             */
-/*   Updated: 2018/01/24 22:08:41 by omiroshn         ###   ########.fr       */
+/*   Updated: 2018/01/24 22:20:45 by omiroshn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # define WIDTH 800
 # define HEIGHT 800
 # define THREADS 16
-# define DB(x) ((double)x)
 
 # define MAC_ESC_BUT 53
 # define MAC_BUT_MINUS 27
@@ -25,8 +24,11 @@
 # define MAC_ARROW_DOWN 125
 # define MAC_ARROW_LEFT 123
 # define MAC_ARROW_RIGHT 124
-# define MAC_BUT_1 18
-# define MAC_BUT_2 19
+# define MAC_SPACE 49
+# define MAC_BUT_R 15
+# define MAC_BUT_1 83
+# define MAC_BUT_2 84
+# define MAC_BUT_3 85
 
 # define LINUX_ESC_BUT 65307
 # define LINUX_BUT_MINUS 45
@@ -71,31 +73,31 @@ typedef	struct			s_mapinfo
 
 typedef struct			s_info
 {
+	char				*str;
+	char				*name;
 	int					offset;
+	int					is_julia;
+	int					n;
+	int					pix;
+	long long			maxiterations;
 	double				k_re;
 	double				k_im;
-	int					is_julia;
 	double				re_factor;
 	double				im_factor;
 	double				dre;
 	double				minre;
 	double				minim;
-	char				*str;
-	char				*name;
-	unsigned			x;
-	unsigned			y;
-	unsigned			cunt;
-	unsigned			end;
 	double				bright;
 	double				c_im;
 	double				c_re;
-	int					n;
 	double				z_re2;
 	double				z_im2;
 	double				z_im;
 	double				z_re;
-	int					pix;
-	long long			maxiterations;
+	unsigned			x;
+	unsigned			y;
+	unsigned			cunt;
+	unsigned			end;
 	float				move_x;
 	float				move_y;
 	float				zoom;
@@ -128,9 +130,11 @@ void					init_func(t_info *info, char **argv, int cunt, int i);
 void					options(void);
 void					options2(void);
 int						exit_func(void *param);
+
 int						key_function(int keycode, t_info *param);
 int						mouse_hook(int mousecode, int x, int y, t_info *i);
 int						julia_motion(int x, int y, t_info *i);
+
 double					ft_map(double value, double istart,
 	double iend, double ostart, double oend);
 
