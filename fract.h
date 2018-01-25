@@ -37,8 +37,11 @@
 # define LINUX_ARROW_DOWN 65364
 # define LINUX_ARROW_LEFT 65361
 # define LINUX_ARROW_RIGHT 65363
+# define LINUX_SPACE 32
+# define LINUX_BUT_R 114
 # define LINUX_BUT_1 49
 # define LINUX_BUT_2 50
+# define LINUX_BUT_3 51
 
 # include "libft/includes/libft.h"
 # include <math.h>
