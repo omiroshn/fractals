@@ -24,7 +24,7 @@ LIBFT_DIR = libft/
 SRC = $(addprefix src/, $(addsuffix .c, $(FILES)))
 OBJ = $(addprefix obj/, $(addsuffix .o, $(FILES)))
 OBJ_LIST = $(addsuffix .o, $(FILES))
-SPEED = -Ofast
+SPEED = -O3
 FLAGS = -Wall -Wextra -Werror
 HEADERS = -I./includes -I./libft/includes
 CGFLAGS_LINUX = -lm -lmlx -lXext -lX11 -pthread
@@ -46,12 +46,12 @@ obj/%.o: src/%.c
 	@echo "\033[37mCompilation of \033[97m$(notdir $<) \033[0m\033[37mdone. \033[0m"
 clean:
 	@rm -f $(OBJ)
-	@make -C libft/ clean
+	@make --no-print-directory -C libft/ clean
 	@echo "\033[31m[ ✔ ] Objects files \033[91m$(OBJ_LIST) \033[0m\033[31m removed. \033[0m"
 fclean:
 	@rm -rf $(OBJ)
 	@rm -f $(NAME)
-	@make -C libft/ fclean
+	@make --no-print-directory -C libft/ fclean
 	@echo "\033[31m[ ✔ ] Objects files \033[91m$(OBJ_LIST) \033[0m\033[31m removed. \033[0m"
 	@echo "\033[31m[ ✔ ] Binary \033[1;31m$(NAME) \033[1;0m\033[31mremoved.\033[0m"
 re: fclean all
