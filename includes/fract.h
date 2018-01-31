@@ -12,6 +12,7 @@
 
 #ifndef FRACT_H
 # define FRACT_H
+# pragma pack(1)
 
 # define WIDTH 800
 # define HEIGHT 800
@@ -43,9 +44,8 @@
 # define LINUX_BUT_2 50
 # define LINUX_BUT_3 51
 
-# include "libft/includes/libft.h"
+# include "libft.h"
 # include <math.h>
-# include <fcntl.h>
 # include <sys/uio.h>
 # include <unistd.h>
 # include <stdlib.h>
