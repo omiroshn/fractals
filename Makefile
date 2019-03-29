@@ -28,7 +28,7 @@ SPEED = -O3
 FLAGS = -Wall -Wextra -Werror
 HEADERS = -I./includes -I./libft/includes
 CGFLAGS_LINUX = -lm -lmlx -lXext -lX11 -pthread
-CGFLAGS_MAC = -lmlx -framework OpenGL -framework AppKit
+CGFLAGS_MAC = -I /Library/Developer/CommandLineTools/usr/include/ -g -L /Library/Developer/CommandLineTools/usr/lib/ -lmlx -framework OpenGL -framework AppKit
 
 all: $(NAME)
 

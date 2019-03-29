@@ -12,7 +12,6 @@
 
 #ifndef FRACT_H
 # define FRACT_H
-# pragma pack(1)
 
 # define WIDTH 800
 # define HEIGHT 800
